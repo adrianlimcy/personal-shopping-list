@@ -6,3 +6,4 @@
 4. mkdir src/Context
 5. touch src/Context/ListsContextProvider.js
 6. touch src/Context/ItemsContextProvider.js
+7. touch src/Context/GlobalContext.js

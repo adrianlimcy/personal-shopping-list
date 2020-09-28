@@ -21,6 +21,21 @@ const reducer = (value, action) => {
                 loading: false,
                 error: action.payload
             }
+        case 'ADD_ITEM_SUCCESS':
+            return {
+                ...value,
+                items: [
+                    ...value.items,
+                    action.payload
+                ],
+                loading:false
+            }
+        case 'ADD_ITEM_ERROR':
+            return {
+                ...value,
+                loading: false,
+                error: 'Something went wrong...'
+            }
         default:
             return value
     }
@@ -39,6 +54,22 @@ async function fetchData(dataSource) {
     }
 }
 
+async function postData(dataSource, content) {
+    try {
+        const data = await fetch(dataSource, {
+            method: 'POST',
+            body: JSON.stringify(content)
+        })
+        const dataJSON = await data.json()
+
+        if (dataJSON) {
+            return await ({ data: dataJSON, error: false})
+        }
+    } catch (error) {
+        return ({data:false, error: error.message})
+    }
+}
+
 export const ItemsContext = React.createContext()
 
 const ItemsContextProvider = ({ children }) => {
@@ -54,8 +85,18 @@ const ItemsContextProvider = ({ children }) => {
         }
     }
 
+    const addItemRequest = async (content) => {
+        const result = await postData('https://my-json-server.typicode.com/PacktPublishing/React-Projects/items', content)
+
+        if (result.data && result.data.hasOwnProperty('id')) {
+            dispatch({type: 'ADD_ITEM_SUCCESS', payload: content})
+        } else {
+            dispatch({type: 'ADD_ITEM_ERROR'})
+        }
+    }
+
     return (
-        <ItemsContext.Provider value={{ ...value, getItemsRequest }}>
+        <ItemsContext.Provider value={{ ...value, getItemsRequest, addItemRequest }}>
             { children }
         </ItemsContext.Provider>
     )

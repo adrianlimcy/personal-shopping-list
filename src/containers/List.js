@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { ListsContext } from '../Context/ListsContextProvider'
+import { ItemsContext } from '../Context/ItemsContextProvider'
 import SubHeader from '../components/Header/SubHeader';
 import ListItem from '../components/ListItem/ListItem';
 
@@ -15,7 +17,9 @@ const Alert = styled.span`
   text-align: center;
 `;
 
-const List = ({ items, loading, error, list, getListRequest, getItemsRequest, match, history }) => {
+const List = ({ match, history }) => {
+  const { list, getListRequest } = React.useContext(ListsContext)
+  const { loading, error, items, getItemsRequest } = React.useContext(ItemsContext)
      
   React.useEffect(()=> {
 
