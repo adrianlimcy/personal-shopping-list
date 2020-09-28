@@ -32,21 +32,26 @@ const Alert = styled.span`
   text-align: center;
 `;
 
-const Lists = ({ lists, loading = false, error= false, match,  history }) =>
-  !loading && !error ? (
-    <>
-      {history && <SubHeader title='Your Lists' />}
-      <ListWrapper>
-        {lists &&
-          lists.map(list => (
-            <ListLink key={list.id} to={`list/${list.id}`}>
-              <Title>{list.title}</Title>
-            </ListLink>
-          ))}
-      </ListWrapper>
-    </>
-  ) : (
-    <Alert>{loading ? 'Loading...' : error}</Alert>
-  );
+const Lists = ({ lists, loading, error, getListsRequest, match,  history }) => {
+    React.useEffect(()=>{
+      if(!lists.length){
+        getListsRequest()
+      }
+    }, [lists, getListsRequest])
+    
+    return !loading && !error ? (
+      <>
+        {history && <SubHeader title='Your Lists' />}
+        <ListWrapper>
+          {lists &&
+            lists.map(list => (
+              <ListLink key={list.id} to={`list/${list.id}`}>
+                <Title>{list.title}</Title>
+              </ListLink>
+            ))}
+        </ListWrapper>
+      </>
+    ) : <Alert>{loading ? 'Loading...' : error}</Alert>
+}
 
 export default Lists;
